@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mapper.PatientMapper">
+
+    <select id="selectPatientById" parameterType="int" resultMap="patientResult">
+        select * from patient where id = #{id}
+        
+    </select>
+    
+    <select id="getPatientDataList" parameterType="int" resultType="Patient">
+		select * from patient where id=#{id} 
+	</select>
+	
+    <select id="selectPatientByUsername" parameterType="String" resultMap="patientResult">
+    	select * from patient where name=#{name}
+    </select>
+     <select id="selectPatient" parameterType="String" resultMap="patientResult">
+    	select * from patient where idcard=#{idcard}
+    </select>
+    <select id="selectByUsernameAndPass" parameterType="Patient" resultMap="patientResult">
+    	select * from patient where name=#{name} and password=#{password}
+    </select>
+    
+    <insert id="addPatient" parameterType="Patient" useGeneratedKeys="true" keyProperty="id">
+    	insert into patient(name, name, password, create_time, update_time) values (#{name}, #{name}, #{password}, #{create_time}, #{update_time})
+    </insert>
+    
+    <update id="addDoctor" parameterType="int">
+    	update patient set doctor_id=#{arg0} where id=#{arg1}
+    </update>
+    
+    <select id="getPatientListByDoctorId" parameterType="int" resultMap="patientResult">
+    	select * from patient where doctor_id=#{doctor_id}
+    </select>
+    
+    <select id="getPatientListByDoctorId2" resultMap="patientResult">
+    	select * from patient where doctor_id=#{doctor_id} and id not in
+    	<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+    		#{item}
+    	</foreach>
+    </select>
+    
+    <resultMap type="Patient" id="patientResult">
+    	<association property="doctor" column="doctor_id" javaType="Doctor" select="getDoctorById"/>
+    </resultMap>
+    <select id="getDoctorById" parameterType="int" resultType="Doctor">
+    	select * from doctor where id=#{id}
+    </select>
+</mapper>
